@@ -220,6 +220,7 @@ function NavigationLinkEdit( {
 						value={ label }
 						onChange={ ( labelValue ) => setAttributes( { label: labelValue } ) }
 						placeholder={ itemLabelPlaceholder }
+						keepPlaceholderOnFocus={ true }
 						withoutInteractiveFormatting
 					/>
 					{ isLinkOpen && (
