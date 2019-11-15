@@ -1,5 +1,28 @@
 // Varsys - Variable System
 
+const STYLESHEET_ID_PREFIX = 'varsys';
+
+function createStyleSheetIdFactory() {
+	let index = 0;
+	return () => `${ STYLESHEET_ID_PREFIX }-${ index++ }`;
+}
+
+const createStyleSheetId = createStyleSheetIdFactory();
+
+const createStyleSheetNode = () => {
+	const node = document.createElement( 'style' );
+	node.setAttribute( 'id', createStyleSheetId() );
+	node.setAttribute( 'type', 'text/css' );
+
+	// Inject into the DOM
+	const headNode = document.querySelector( 'head' );
+	if ( headNode ) {
+		headNode.appendChild( node );
+	}
+
+	return node;
+};
+
 function noop() {
 	return undefined;
 }
@@ -14,10 +37,6 @@ const createCssVarProp = ( {
 		return `--${ baseName }`;
 	}
 	return `--${ namespace }-${ baseName }`;
-};
-
-const addCssVarToDocument = ( prop, value ) => {
-	document.documentElement.style.setProperty( prop, value );
 };
 
 const recursivelyApplyCssProps = ( {
@@ -54,9 +73,43 @@ const recursivelyApplyCssProps = ( {
 // 	return `var(${ preferredVar }, var(${ defaultVar }, ${ fallbackVar }))`;
 // };
 
+function getStyleSheetFromStyleNode( styleNode ) {
+	return [ ...document.styleSheets ].find(
+		( styleSheet ) => styleSheet.ownerNode === styleNode
+	);
+}
+
+function createStyleRule( selectorText, prop, value ) {
+	return `${ selectorText } { ${ prop }: ${ value }; }`;
+}
+
+function insertRule( styleSheet, selectorText, prop, value ) {
+	const styleRule = createStyleRule( selectorText, prop, value );
+	const existingRule = [ ...styleSheet.rules ].find( ( rule ) => {
+		return rule.style[ 0 ] === prop;
+	} );
+	const ruleIndex = existingRule ?
+		[ ...styleSheet.rules ].indexOf( existingRule ) :
+		undefined;
+
+	if ( typeof ruleIndex !== 'number' ) {
+		styleSheet.insertRule( styleRule );
+	} else {
+		styleSheet.insertRule( styleRule, ruleIndex );
+		styleSheet.removeRule( ruleIndex + 1 );
+	}
+}
+
 export const createVarsys = ( options ) => {
 	const { namespace = '', observables = [] } = options;
+	const styleNode = createStyleSheetNode();
+	const styleSheet = getStyleSheetFromStyleNode( styleNode );
+
 	let state = {};
+
+	const addCssVarToDocument = ( prop, value ) => {
+		insertRule( styleSheet, ':root', prop, value );
+	};
 
 	const __updateState = () => {
 		Object.keys( state ).forEach( ( key ) => {
@@ -77,6 +130,8 @@ export const createVarsys = ( options ) => {
 	}
 
 	return {
+		styleNode,
+		styleSheet,
 		observable,
 		apply: ( props ) => {
 			recursivelyApplyCssProps( { namespace, props, setState } );

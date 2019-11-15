@@ -98,7 +98,7 @@ function ButtonEdit( {
 		text,
 		title,
 		url,
-		applyGlobally,
+		applyGlobally = true,
 	} = attributes;
 	const onSetLinkRel = useCallback(
 		( value ) => {
