@@ -240,7 +240,7 @@ function NavigationMenu( {
 					allowedBlocks={ [ 'core/navigation-menu-item' ] }
 					templateInsertUpdatesSelection={ false }
 					__experimentalMoverDirection={ 'horizontal' }
-					__experimentalConsumeChildToolbar={ true }
+					__experimentalCaptureChildToolbar={ true }
 				/>
 
 			</div>
