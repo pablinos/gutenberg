@@ -79,7 +79,7 @@ function BlockListBlock( {
 	isEmptyDefaultBlock,
 	isMovable,
 	isAncestorOfSelectedBlock,
-	isParentOfSelectedBlock,
+	isRootOfHierarchy,
 	isDraggable,
 	isSelectionEnabled,
 	className,
@@ -559,7 +559,7 @@ function BlockListBlock( {
 					/>
 				) }
 
-				{ isParentOfSelectedBlock && (
+				{ isRootOfHierarchy && isAncestorOfSelectedBlock && (
 					// A slot made available on parents when a child Block is selected
 					// to allow child Blocks to render their toolbars into the DOM
 					// of the parent.
@@ -674,6 +674,7 @@ const applyWithSelect = withSelect(
 			getBlockOrder,
 			__unstableGetBlockWithoutInnerBlocks,
 			isNavigationMode,
+			getBlockHierarchyRootClientId,
 		} = select( 'core/block-editor' );
 
 		const block = __unstableGetBlockWithoutInnerBlocks( clientId );
@@ -683,9 +684,9 @@ const applyWithSelect = withSelect(
 		const templateLock = getTemplateLock( rootClientId );
 		const checkDeep = true;
 		const isAncestorOfSelectedBlock = hasSelectedInnerBlock( clientId, checkDeep );
-		const isParentOfSelectedBlock = hasSelectedInnerBlock( clientId );
 		const index = getBlockIndex( clientId, rootClientId );
 		const blockOrder = getBlockOrder( rootClientId );
+		const isRootOfHierarchy = clientId === getBlockHierarchyRootClientId( clientId );
 
 		// The fallback to `{}` is a temporary fix.
 		// This function should never be called when a block is not present in the state.
@@ -724,7 +725,7 @@ const applyWithSelect = withSelect(
 			isValid,
 			isSelected,
 			isAncestorOfSelectedBlock,
-			isParentOfSelectedBlock,
+			isRootOfHierarchy,
 		};
 	}
 );
