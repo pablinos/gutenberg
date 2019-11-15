@@ -676,7 +676,6 @@ const applyWithSelect = withSelect(
 			getBlockOrder,
 			__unstableGetBlockWithoutInnerBlocks,
 			isNavigationMode,
-			getBlockHierarchyRootClientId,
 		} = select( 'core/block-editor' );
 
 		const block = __unstableGetBlockWithoutInnerBlocks( clientId );
@@ -687,7 +686,6 @@ const applyWithSelect = withSelect(
 		const isParentOfSelectedBlock = hasSelectedInnerBlock( clientId, true );
 		const index = getBlockIndex( clientId, rootClientId );
 		const blockOrder = getBlockOrder( rootClientId );
-		const isRootOfHierarchy = clientId === getBlockHierarchyRootClientId( clientId );
 
 		// The fallback to `{}` is a temporary fix.
 		// This function should never be called when a block is not present in the state.
@@ -726,7 +724,6 @@ const applyWithSelect = withSelect(
 			isValid,
 			isSelected,
 			isParentOfSelectedBlock,
-			isRootOfHierarchy,
 		};
 	}
 );
