@@ -2,6 +2,10 @@
  * WordPress dependencies
  */
 import { withSelect } from '@wordpress/data';
+/**
+ * External dependencies
+ */
+import { first } from 'lodash';
 
 /**
  * Internal dependencies
@@ -11,8 +15,9 @@ import MultiBlocksSwitcher from '../block-switcher/multi-blocks-switcher';
 import BlockControls from '../block-controls';
 import BlockFormatControls from '../block-format-controls';
 import BlockSettingsMenu from '../block-settings-menu';
+import BlockTitle from '../block-title';
 
-function BlockToolbar( { blockClientIds, isValid, mode } ) {
+function BlockToolbar( { blockClientIds, isValid, mode, showBlockTitle = false } ) {
 	if ( blockClientIds.length === 0 ) {
 		return null;
 	}
@@ -30,6 +35,13 @@ function BlockToolbar( { blockClientIds, isValid, mode } ) {
 		<div className="editor-block-toolbar block-editor-block-toolbar">
 			{ mode === 'visual' && isValid && (
 				<>
+					{ showBlockTitle && (
+						<div className="block-editor-block-toolbar__block-title">
+							<BlockTitle
+								clientId={ first( blockClientIds ) }
+							/>
+						</div>
+					) }
 					<BlockSwitcher clientIds={ blockClientIds } />
 					<BlockControls.Slot bubblesVirtually className="block-editor-block-toolbar__slot" />
 					<BlockFormatControls.Slot bubblesVirtually className="block-editor-block-toolbar__slot" />
