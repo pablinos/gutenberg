@@ -47,13 +47,9 @@ const MediaReplaceFlow = (
 	const [ showEditURLInput, setShowEditURLInput ] = useState( false );
 	const [ mediaURLValue, setMediaURLValue ] = useState( mediaURL );
 	const [ showMediaReplaceOptions, setShowMediaReplaceOptions ] = useState( false );
-	const { mediaUpload } = useSelect( ( select ) => {
-		const { getSettings } = select( 'core/block-editor' );
-
-		return {
-			mediaUpload: getSettings().mediaUpload,
-		};
-	}, [] );
+	const mediaUpload = useSelect( ( select ) => {
+		return select( 'core/block-editor' ).getSettings().mediaUpload;
+	} );
 	const editMediaButtonRef = createRef();
 
 	const stopPropagation = ( event ) => {
@@ -70,7 +66,6 @@ const MediaReplaceFlow = (
 	const selectMedia = ( media ) => {
 		onSelect( media );
 		setMediaURLValue( media.url );
-		setShowMediaReplaceOptions( false );
 		speak( __( 'The media file has been replaced' ) );
 	};
 
@@ -216,9 +211,6 @@ const MediaReplaceFlow = (
 	);
 };
 
-/**
- * @see https://github.com/WordPress/gutenberg/blob/master/packages/block-editor/src/components/media-placeholder/README.md
- */
 export default compose(
 	withNotices,
 )( MediaReplaceFlow );
