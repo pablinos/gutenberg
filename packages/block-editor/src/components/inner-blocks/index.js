@@ -111,7 +111,7 @@ class InnerBlocks extends Component {
 			__experimentalTemplateOptions: templateOptions,
 			__experimentalOnSelectTemplateOption: onSelectTemplateOption,
 			__experimentalAllowTemplateOptionSkip: allowTemplateOptionSkip,
-			__experimentalConsumeChildToolbar: consumeChildToolbar,
+			__experimentalCaptureChildToolbar: captureChildToolbar,
 		} = this.props;
 		const { templateInProcess } = this.state;
 
@@ -119,7 +119,7 @@ class InnerBlocks extends Component {
 
 		const classes = classnames( 'editor-inner-blocks block-editor-inner-blocks', {
 			'has-overlay': isSmallScreen && ( hasOverlay && ! isPlaceholder ), // Temporary click-through disable on desktop.
-			'is-consuming-toolbars': consumeChildToolbar,
+			'is-capturing-child-toolbar': captureChildToolbar,
 		} );
 
 		return (
@@ -135,7 +135,7 @@ class InnerBlocks extends Component {
 							rootClientId={ clientId }
 							renderAppender={ renderAppender }
 							__experimentalMoverDirection={ moverDirection }
-							__experimentalConsumeChildToolbar={ consumeChildToolbar }
+							__experimentalCaptureChildToolbar={ captureChildToolbar }
 						/>
 				) }
 			</div>

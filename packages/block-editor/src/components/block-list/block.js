@@ -103,7 +103,7 @@ function BlockListBlock( {
 	enableAnimation,
 	isNavigationMode,
 	enableNavigationMode,
-	__experimentalConsumeChildToolbar: consumeChildToolbar,
+	__experimentalCaptureChildToolbar: captureChildToolbar,
 } ) {
 	// Random state used to rerender the component if needed, ideally we don't need this
 	const [ , updateRerenderState ] = useState( {} );
@@ -566,7 +566,7 @@ function BlockListBlock( {
 					<ChildToolbarSlot />
 				) }
 
-				{ ( ( ! consumeChildToolbar && shouldShowContextualToolbar ) || isForcingContextualToolbar.current ) && (
+				{ ( ( ! captureChildToolbar && shouldShowContextualToolbar ) || isForcingContextualToolbar.current ) && (
 					// Standard toolbar attached directly to the Block.
 					<BlockContextualToolbar
 						// If the toolbar is being shown because of being forced
@@ -576,7 +576,7 @@ function BlockListBlock( {
 
 				) }
 
-				{ consumeChildToolbar && shouldShowContextualToolbar && (
+				{ captureChildToolbar && shouldShowContextualToolbar && (
 					// If the parent Block is set to consume toolbars of the child Blocks
 					// then render the child Block's toolbar into the Slot provided
 					// by the parent.
