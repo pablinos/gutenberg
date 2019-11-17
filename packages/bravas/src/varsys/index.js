@@ -85,6 +85,7 @@ function createStyleRule( selectorText, prop, value ) {
 
 function insertRule( styleSheet, selectorText, prop, value ) {
 	const styleRule = createStyleRule( selectorText, prop, value );
+	const cssText = `${ prop }: ${ value };`;
 	const existingRule = [ ...styleSheet.rules ].find( ( rule ) => {
 		return rule.style[ 0 ] === prop;
 	} );
@@ -93,10 +94,11 @@ function insertRule( styleSheet, selectorText, prop, value ) {
 		undefined;
 
 	if ( typeof ruleIndex !== 'number' ) {
+		// Insert
 		styleSheet.insertRule( styleRule );
 	} else {
-		styleSheet.insertRule( styleRule, ruleIndex );
-		styleSheet.removeRule( ruleIndex + 1 );
+		// Replace
+		styleSheet.rules[ ruleIndex ].style.cssText = cssText;
 	}
 }
 
