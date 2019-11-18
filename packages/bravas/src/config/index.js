@@ -1,6 +1,10 @@
-// Varsys - Variable System
+// Config - Variable System
+/**
+ * External dependencies
+ */
+import { set as baseSet } from 'lodash';
 
-const STYLESHEET_ID_PREFIX = 'varsys';
+const STYLESHEET_ID_PREFIX = 'config';
 
 function createStyleSheetIdFactory() {
 	let index = 0;
@@ -102,7 +106,7 @@ function insertRule( styleSheet, selectorText, prop, value ) {
 	}
 }
 
-export const createVarsys = ( options ) => {
+export const createConfig = ( options ) => {
 	const { namespace = '', observables = [] } = options;
 	const styleNode = createStyleSheetNode();
 	const styleSheet = getStyleSheetFromStyleNode( styleNode );
@@ -135,6 +139,10 @@ export const createVarsys = ( options ) => {
 		styleNode,
 		styleSheet,
 		observable,
+		set: ( props, value ) => {
+			const nextProps = baseSet( {}, props, value );
+			recursivelyApplyCssProps( { namespace, props: nextProps, setState } );
+		},
 		apply: ( props ) => {
 			recursivelyApplyCssProps( { namespace, props, setState } );
 		},
@@ -151,4 +159,4 @@ export const createVarsys = ( options ) => {
 	};
 };
 
-export const varsys = createVarsys( { namespace: 'bravas' } );
+export const config = createConfig( { namespace: 'bravas' } );

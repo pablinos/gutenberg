@@ -24,7 +24,8 @@
 	"dependencies": {
 		"@wordpress/edit-post": "file:../edit-post",
 		"@wordpress/element": "file:../element",
-		"@wordpress/plugins": "file:../plugins"
+		"@wordpress/plugins": "file:../plugins",
+		"lodash": "^4.17.15"
 	},
 	"publishConfig": {
 		"access": "public"

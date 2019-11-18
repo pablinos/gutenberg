@@ -6,9 +6,9 @@ import classnames from 'classnames';
 /**
  * WordPress dependencies
  */
-import { varsys } from '@wordpress/bravas';
+import { config } from '@wordpress/bravas';
 import { __ } from '@wordpress/i18n';
-import { useCallback } from '@wordpress/element';
+import { useEffect, useCallback } from '@wordpress/element';
 import { compose, withInstanceId } from '@wordpress/compose';
 import {
 	PanelBody,
@@ -100,6 +100,26 @@ function ButtonEdit( {
 		url,
 		applyGlobally = true,
 	} = attributes;
+
+	const setBravasVariables = () => {
+		if ( backgroundColor.color ) {
+			config.set( 'button.backgroundColor', backgroundColor.color );
+		}
+		if ( textColor.color ) {
+			config.set( 'button.textColor', textColor.color );
+		}
+	};
+
+	const setBravasVariablesGlobally = () => {
+		if ( applyGlobally ) {
+			setBravasVariables();
+		}
+	};
+
+	useEffect( () => {
+		setBravasVariablesGlobally();
+	}, [ setBravasVariablesGlobally ] );
+
 	const onSetLinkRel = useCallback(
 		( value ) => {
 			setAttributes( { rel: value } );
@@ -139,7 +159,7 @@ function ButtonEdit( {
 
 	const handleSetTextColor = ( nextTextColor ) => {
 		if ( applyGlobally ) {
-			varsys.apply( {
+			config.apply( {
 				button: {
 					textColor: nextTextColor,
 				},
@@ -148,6 +168,16 @@ function ButtonEdit( {
 
 		setTextColor( nextTextColor );
 	};
+
+	let localStyles = {};
+
+	if ( ! applyGlobally ) {
+		localStyles = {
+			'--bravas-button-backgroundColor':
+				gradientValue || backgroundColor.color,
+			'--bravas-button-textColor': textColor.color,
+		};
+	}
 
 	return (
 		<div className={ className } title={ title }>
@@ -166,16 +196,11 @@ function ButtonEdit( {
 					'no-border-radius': borderRadius === 0,
 				} ) }
 				style={ {
-					...( ! backgroundColor.color && gradientValue ?
-						{ background: gradientValue } :
-						{ backgroundColor: backgroundColor.color } ),
-					// color: textColor.color,
+					...localStyles,
 					borderRadius: borderRadius ?
 						borderRadius + 'px' :
 						undefined,
-					backgroundColor:
-						backgroundColor.color ||
-						'var(--bravas-button-backgroundColor)',
+					background: 'var(--bravas-button-backgroundColor)',
 					color: textColor.color || 'var(--bravas-button-textColor)',
 				} }
 			/>
@@ -201,10 +226,12 @@ function ButtonEdit( {
 						{
 							value: backgroundColor.color,
 							onChange: ( newColor ) => {
-								setAttributes( { customGradient: undefined } );
+								setAttributes( {
+									customGradient: undefined,
+								} );
 								setBackgroundColor( newColor );
 								if ( applyGlobally ) {
-									varsys.apply( {
+									config.apply( {
 										button: {
 											backgroundColor: newColor,
 										},
@@ -235,6 +262,13 @@ function ButtonEdit( {
 				<__experimentalGradientPickerPanel
 					onChange={ ( newGradient ) => {
 						setGradient( newGradient );
+						if ( applyGlobally ) {
+							config.apply( {
+								button: {
+									backgroundColor: newGradient,
+								},
+							} );
+						}
 						setBackgroundColor();
 					} }
 					value={ gradientValue }

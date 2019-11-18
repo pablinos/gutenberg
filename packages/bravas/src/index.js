@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import { varsys } from './varsys';
+import { config } from './config';
 
 const defaultThemeConfig = {
 	button: {
@@ -10,10 +10,10 @@ const defaultThemeConfig = {
 	},
 };
 
-varsys.apply( defaultThemeConfig );
+config.apply( defaultThemeConfig );
 
 window.bravas = {
-	varsys,
+	config,
 };
 
-export * from './varsys';
+export * from './config';
