@@ -107,6 +107,7 @@ class EditorProvider extends Component {
 				'__experimentalEnableMenuBlock',
 				'__experimentalBlockDirectory',
 				'__experimentalEnableFullSiteEditing',
+				'__experimentalEnableFullSiteEditingDemo',
 				'showInserterHelpPanel',
 				'gradients',
 			] ),
