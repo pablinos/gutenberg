@@ -322,9 +322,7 @@ _Related_
 
 <a name="MediaReplaceFlow" href="#MediaReplaceFlow">#</a> **MediaReplaceFlow**
 
-_Related_
-
--   <https://github.com/WordPress/gutenberg/blob/master/packages/block-editor/src/components/media-placeholder/README.md>
+Undocumented declaration.
 
 <a name="MediaUpload" href="#MediaUpload">#</a> **MediaUpload**
 

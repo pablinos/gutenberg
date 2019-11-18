@@ -158,6 +158,14 @@ const MediaReplaceFlow = (
 
 	const onClickOutside = () => ( setShowMediaReplaceOptions( false ) );
 
+	const openOnArrowDown = ( event ) => {
+		if ( event.keyCode === DOWN ) {
+			event.preventDefault();
+			event.stopPropagation();
+			event.target.click();
+		}
+	};
+
 	const editMediaButton = (
 		<MediaUploadCheck>
 			<MediaUpload
@@ -166,13 +174,14 @@ const MediaReplaceFlow = (
 				allowedTypes={ allowedTypes }
 				render={ ( { open } ) => (
 					<>
-						<Toolbar className={ 'mediaflow-replace components-dropdown-menu' }>
+						<Toolbar className={ 'media-replace-flow components-dropdown-menu' }>
 							<Button
 								ref={ editMediaButtonRef }
 								className={ 'components-icon-button components-dropdown-menu__toggle' }
 								onClick={ () => {
 									setShowMediaReplaceOptions( ! showMediaReplaceOptions );
 								} }
+								onKeyDown={ openOnArrowDown }
 							>
 								<span className="components-dropdown-menu__label" > { name } </span>
 								<span className="components-dropdown-menu__indicator" />
@@ -181,6 +190,7 @@ const MediaReplaceFlow = (
 								<Popover
 									onClickOutside={ onClickOutside }
 									onClose={ onClose }
+									className={ 'media-replace-flow__options' }
 								>
 									<>
 										<NavigableMenu>

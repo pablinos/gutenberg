@@ -1,55 +1,66 @@
-.mediaflow-replace .components-dropdown-menu__indicator {
+.media-replace-flow .components-dropdown-menu__indicator {
 	margin-left: 4px;
+
+	.components-dropdown-menu.media-flow_toolbar {
+		.components-dropdown-menu__label {
+			margin-right: 6px;
+			margin-left: 2px;
+		}
+	}
 }
 
-.block-editor-media-flow__url-input {
-	padding: 0 15px 10px 25px;
+.media-replace-flow__options.components-popover:not(.is-mobile) {
 
-	.components-external-link__icon {
-		position: absolute;
-		right: 50px;
-		bottom: 22px;
+	.components-popover__content {
+		// this is a safari problem that shows scrollbars
+		// when display:flex and max-width are used together
+		overflow-x: hidden;
 	}
 
-	.block-editor-url-popover__link-viewer-url.is-full-width {
-		padding-right: 10px;
-		padding-top: 3px;
-		max-width: 169px;
-	}
+	.block-editor-media-flow__url-input {
 
-	// Mimic toolbar component styles for the icons in this popover.
-	.components-icon-button {
-		padding: 5px;
-		width: 40px;
-		height: 40px;
+		padding: 0 15px 10px 25px;
 
-		> svg {
+		.components-external-link__icon {
+			position: absolute;
+			right: 50px;
+			bottom: 22px;
+		}
+
+		.block-editor-url-popover__link-viewer-url.is-full-width {
+			padding-right: 10px;
+			padding-top: 3px;
+			max-width: 169px;
+		}
+
+		// Mimic toolbar component styles for the icons in this popover.
+		.components-icon-button {
 			padding: 5px;
-			border-radius: $radius-round-rectangle;
-			height: 30px;
-			width: 30px;
-		}
-
-		&:not(:disabled):not([aria-disabled="true"]):not(.is-default):hover {
-			box-shadow: none;
+			width: 40px;
+			height: 40px;
 
 			> svg {
-				@include formatting-button-style__hover;
+				padding: 5px;
+				border-radius: $radius-round-rectangle;
+				height: 30px;
+				width: 30px;
+			}
+
+			&:not(:disabled):not([aria-disabled="true"]):not(.is-default):hover {
+				box-shadow: none;
+
+				> svg {
+					@include formatting-button-style__hover;
+				}
+			}
+
+			&:not(:disabled):focus {
+				box-shadow: none;
+
+				> svg {
+					@include formatting-button-style__focus;
+				}
 			}
 		}
-
-		&:not(:disabled):focus {
-			box-shadow: none;
-
-			> svg {
-				@include formatting-button-style__focus;
-			}
-		}
-	}
-}
-.components-dropdown-menu.media-flow_toolbar {
-	.components-dropdown-menu__label {
-		margin-right: 6px;
-		margin-left: 2px;
 	}
 }
