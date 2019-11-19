@@ -93,65 +93,6 @@ const MediaReplaceFlow = (
 		} );
 	};
 
-	const fileUploadButton = (
-		<FormFileUpload
-			onChange={ uploadFiles }
-			accept={ allowedTypes }
-			multiple={ multiple }
-			render={ ( { openFileDialog } ) => {
-				return (
-					<MenuItem
-						icon="upload"
-						onClick={ () => {
-							openFileDialog();
-						} }
-					>
-						{ __( 'Upload' ) }
-					</MenuItem>
-				);
-			} }
-		/>
-	);
-
-	const URLButton = (
-		<MenuItem
-			icon="admin-links"
-			onClick={ () => ( setShowURLInput( ! showURLInput ) ) }
-			aria-expanded={ showURLInput }
-		>
-			<div> { __( 'Insert from URL' ) } </div>
-		</MenuItem>
-	);
-
-	let urlInputUIContent;
-	if ( showEditURLInput ) {
-		urlInputUIContent = ( <LinkEditor
-			onKeyDown={ stopPropagationRelevantKeys }
-			onKeyPress={ stopPropagation }
-			value={ mediaURLValue }
-			isFullWidthInput={ true }
-			hasInputBorder={ true }
-			onChangeInputValue={ ( url ) => ( setMediaURLValue( url ) ) }
-			onSubmit={ ( event ) => {
-				event.preventDefault();
-				onSelectURL( mediaURLValue );
-				setShowEditURLInput( ! showEditURLInput );
-				editMediaButtonRef.current.focus();
-			} }
-		/> );
-	} else {
-		urlInputUIContent = ( <LinkViewer
-			isFullWidth={ true }
-			className="editor-format-toolbar__link-container-content block-editor-format-toolbar__link-container-content"
-			url={ mediaURLValue }
-			onEditLinkClick={ () => ( setShowEditURLInput( ! showEditURLInput ) ) }
-		/> );
-	}
-
-	const urlInputUI = ( showURLInput && <div className="block-editor-media-flow__url-input">
-		{ urlInputUIContent }
-	</div> );
-
 	const onClose = () => {
 		editMediaButtonRef.current.focus();
 	};
@@ -166,58 +107,103 @@ const MediaReplaceFlow = (
 		}
 	};
 
-	const editMediaButton = (
+	let urlInputUIContent;
+	if ( showEditURLInput ) {
+		urlInputUIContent = (
+			<LinkEditor
+				onKeyDown={ stopPropagationRelevantKeys }
+				onKeyPress={ stopPropagation }
+				value={ mediaURLValue }
+				isFullWidthInput={ true }
+				hasInputBorder={ true }
+				onChangeInputValue={ ( url ) => ( setMediaURLValue( url ) ) }
+				onSubmit={ ( event ) => {
+					event.preventDefault();
+					onSelectURL( mediaURLValue );
+					setShowEditURLInput( ! showEditURLInput );
+					editMediaButtonRef.current.focus();
+				} }
+			/>
+		);
+	} else {
+		urlInputUIContent = (
+			<LinkViewer
+				isFullWidth={ true }
+				className="editor-format-toolbar__link-container-content block-editor-format-toolbar__link-container-content"
+				url={ mediaURLValue }
+				onEditLinkClick={ () => ( setShowEditURLInput( ! showEditURLInput ) ) }
+			/>
+		);
+	}
+
+	return (
 		<MediaUploadCheck>
 			<MediaUpload
 				onSelect={ ( media ) => selectMedia( media ) }
 				onClose={ () => setShowMediaReplaceOptions( true ) }
 				allowedTypes={ allowedTypes }
 				render={ ( { open } ) => (
-					<>
-						<Toolbar className={ 'media-replace-flow components-dropdown-menu' }>
-							<Button
-								ref={ editMediaButtonRef }
-								className={ 'components-icon-button components-dropdown-menu__toggle' }
-								onClick={ () => {
-									setShowMediaReplaceOptions( ! showMediaReplaceOptions );
-								} }
-								onKeyDown={ openOnArrowDown }
+					<Toolbar className={ 'media-replace-flow components-dropdown-menu' }>
+						<Button
+							ref={ editMediaButtonRef }
+							className={ 'components-icon-button components-dropdown-menu__toggle' }
+							onClick={ () => {
+								setShowMediaReplaceOptions( ! showMediaReplaceOptions );
+							} }
+							onKeyDown={ openOnArrowDown }
+						>
+							<span className="components-dropdown-menu__label" > { name } </span>
+							<span className="components-dropdown-menu__indicator" />
+						</Button>
+						{ showMediaReplaceOptions &&
+							<Popover
+								onClickOutside={ onClickOutside }
+								onClose={ onClose }
+								className={ 'media-replace-flow__options' }
 							>
-								<span className="components-dropdown-menu__label" > { name } </span>
-								<span className="components-dropdown-menu__indicator" />
-							</Button>
-							{ showMediaReplaceOptions &&
-								<Popover
-									onClickOutside={ onClickOutside }
-									onClose={ onClose }
-									className={ 'media-replace-flow__options' }
-								>
-									<>
-										<NavigableMenu>
-											<MenuItem
-												icon="admin-media"
-												onClick={ open }
-											>
-												{ __( 'Open Media Library' ) }
-											</MenuItem>
-											{ fileUploadButton }
-											{ URLButton }
-										</NavigableMenu>
-										{ urlInputUI }
-									</>
-								</Popover>
-							}
-						</Toolbar>
-					</>
+								<>
+									<NavigableMenu>
+										<MenuItem
+											icon="admin-media"
+											onClick={ open }
+										>
+											{ __( 'Open Media Library' ) }
+										</MenuItem>
+										<FormFileUpload
+											onChange={ uploadFiles }
+											accept={ allowedTypes }
+											multiple={ multiple }
+											render={ ( { openFileDialog } ) => {
+												return (
+													<MenuItem
+														icon="upload"
+														onClick={ () => {
+															openFileDialog();
+														} }
+													>
+														{ __( 'Upload' ) }
+													</MenuItem>
+												);
+											} }
+										/>
+										<MenuItem
+											icon="admin-links"
+											onClick={ () => ( setShowURLInput( ! showURLInput ) ) }
+											aria-expanded={ showURLInput }
+										>
+											<div> { __( 'Insert from URL' ) } </div>
+										</MenuItem>
+									</NavigableMenu>
+									{ showURLInput && <div className="block-editor-media-flow__url-input">
+										{ urlInputUIContent }
+									</div> }
+								</>
+							</Popover>
+						}
+					</Toolbar>
 				) }
 			/>
 		</MediaUploadCheck>
-	);
-
-	return (
-		<>
-			{ editMediaButton }
-		</>
 	);
 };
 
