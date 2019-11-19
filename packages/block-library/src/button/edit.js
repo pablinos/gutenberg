@@ -78,6 +78,56 @@ function BorderPanel( { borderRadius = '', setAttributes } ) {
 	);
 }
 
+function CustomStyles( { applyGlobally, padding, shadow, setAttributes } ) {
+	const setPadding = useCallback(
+		( newPadding ) => {
+			setAttributes( { padding: newPadding } );
+			if ( applyGlobally ) {
+				configSet( 'button.padding', newPadding );
+			}
+		},
+		[ applyGlobally, setAttributes ]
+	);
+	const setShadow = useCallback(
+		( newShadow ) => {
+			setAttributes( { shadow: newShadow } );
+			if ( applyGlobally ) {
+				configSet( 'button.shadow', newShadow );
+			}
+		},
+		[ applyGlobally, setAttributes ]
+	);
+
+	const initialOpen = true;
+
+	return (
+		<PanelBody initialOpen={ initialOpen } title={ __( 'Custom Styles' ) }>
+			<TextControl
+				placeholder="12px 24px"
+				label={ __( 'Padding' ) }
+				value={ padding }
+				onChange={ setPadding }
+				autoComplete="off"
+			/>
+			<RangeControl
+				value={ shadow }
+				label={ __( 'Shadow' ) }
+				min={ 0 }
+				max={ 24 }
+				initialPosition={ 0 }
+				allowReset
+				onChange={ setShadow }
+			/>
+		</PanelBody>
+	);
+}
+
+function configSet( props, value ) {
+	if ( value !== undefined ) {
+		config.set( props, value );
+	}
+}
+
 function ButtonEdit( {
 	attributes,
 	backgroundColor,
@@ -93,8 +143,10 @@ function ButtonEdit( {
 	const {
 		borderRadius,
 		linkTarget,
+		padding,
 		placeholder,
 		rel,
+		shadow,
 		text,
 		title,
 		url,
@@ -102,12 +154,10 @@ function ButtonEdit( {
 	} = attributes;
 
 	const setBravasVariables = () => {
-		if ( backgroundColor.color ) {
-			config.set( 'button.backgroundColor', backgroundColor.color );
-		}
-		if ( textColor.color ) {
-			config.set( 'button.textColor', textColor.color );
-		}
+		configSet( 'button.backgroundColor', backgroundColor.color );
+		configSet( 'button.textColor', textColor.color );
+		configSet( 'button.padding', padding );
+		configSet( 'button.shadow', shadow );
 	};
 
 	const setBravasVariablesGlobally = () => {
@@ -151,33 +201,62 @@ function ButtonEdit( {
 		},
 		[ rel, setAttributes ]
 	);
+
 	const {
 		gradientClass,
 		gradientValue,
 		setGradient,
 	} = __experimentalUseGradient();
 
-	const handleSetTextColor = ( nextTextColor ) => {
+	const handleSetTextColor = ( newTextColor ) => {
+		if ( applyGlobally ) {
+			configSet( 'button.textColor', newTextColor );
+		}
+
+		setTextColor( newTextColor );
+	};
+
+	const handleOnSetBackground = ( newBackground ) => {
+		setAttributes( {
+			customGradient: undefined,
+		} );
+		setBackgroundColor( newBackground );
+		if ( applyGlobally ) {
+			configSet( 'button.backgroundColor', newBackground );
+		}
+	};
+
+	const handleOnSetGradient = ( newGradient ) => {
+		setGradient( newGradient );
 		if ( applyGlobally ) {
 			config.apply( {
 				button: {
-					textColor: nextTextColor,
+					backgroundColor: newGradient,
 				},
 			} );
 		}
-
-		setTextColor( nextTextColor );
+		setBackgroundColor();
 	};
 
 	let localStyles = {};
 
 	if ( ! applyGlobally ) {
 		localStyles = {
-			'--bravas-button-backgroundColor':
-				gradientValue || backgroundColor.color,
+			'--bravas-button-backgroundColor': gradientValue || backgroundColor.color,
+			'--bravas-button-boxShadow': shadow,
+			'--bravas-button-padding': padding,
 			'--bravas-button-textColor': textColor.color,
 		};
 	}
+
+	const classes = classnames( 'wp-block-button__link', {
+		'has-background': backgroundColor.color || gradientValue,
+		[ backgroundColor.class ]: ! gradientValue && backgroundColor.class,
+		'has-text-color': textColor.color,
+		[ textColor.class ]: textColor.class,
+		[ gradientClass ]: gradientClass,
+		'no-border-radius': borderRadius === 0,
+	} );
 
 	return (
 		<div className={ className } title={ title }>
@@ -186,22 +265,13 @@ function ButtonEdit( {
 				value={ text }
 				onChange={ ( value ) => setAttributes( { text: value } ) }
 				withoutInteractiveFormatting
-				className={ classnames( 'wp-block-button__link', {
-					'has-background': backgroundColor.color || gradientValue,
-					[ backgroundColor.class ]:
-						! gradientValue && backgroundColor.class,
-					'has-text-color': textColor.color,
-					[ textColor.class ]: textColor.class,
-					[ gradientClass ]: gradientClass,
-					'no-border-radius': borderRadius === 0,
-				} ) }
+				className={ classes }
 				style={ {
 					...localStyles,
-					borderRadius: borderRadius ?
-						borderRadius + 'px' :
-						undefined,
+					borderRadius,
 					background: 'var(--bravas-button-backgroundColor)',
-					color: textColor.color || 'var(--bravas-button-textColor)',
+					padding: 'var(--bravas-button-padding)',
+					color: 'var(--bravas-button-textColor)',
 				} }
 			/>
 			<URLInput
@@ -225,19 +295,7 @@ function ButtonEdit( {
 					colorSettings={ [
 						{
 							value: backgroundColor.color,
-							onChange: ( newColor ) => {
-								setAttributes( {
-									customGradient: undefined,
-								} );
-								setBackgroundColor( newColor );
-								if ( applyGlobally ) {
-									config.apply( {
-										button: {
-											backgroundColor: newColor,
-										},
-									} );
-								}
-							},
+							onChange: handleOnSetBackground,
 							label: __( 'Background Color' ),
 						},
 						{
@@ -260,18 +318,14 @@ function ButtonEdit( {
 					/>
 				</PanelColorSettings>
 				<__experimentalGradientPickerPanel
-					onChange={ ( newGradient ) => {
-						setGradient( newGradient );
-						if ( applyGlobally ) {
-							config.apply( {
-								button: {
-									backgroundColor: newGradient,
-								},
-							} );
-						}
-						setBackgroundColor();
-					} }
+					onChange={ handleOnSetGradient }
 					value={ gradientValue }
+				/>
+				<CustomStyles
+					applyGlobally={ applyGlobally }
+					padding={ padding }
+					setAttributes={ setAttributes }
+					shadow={ shadow }
 				/>
 				<BorderPanel
 					borderRadius={ borderRadius }

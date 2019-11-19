@@ -22,6 +22,12 @@
 		"backgroundColor": {
 			"type": "string"
 		},
+		"padding": {
+			"type": "string"
+		},
+		"shadow": {
+			"type": "string"
+		},
 		"textColor": {
 			"type": "string"
 		},
