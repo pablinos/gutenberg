@@ -63,6 +63,7 @@ import * as socialLinks from './social-links';
 import * as socialLink from './social-link';
 
 // Full Site Editing Blocks
+import * as siteLogo from './site-logo';
 import * as siteTitle from './site-title';
 import * as postTitle from './post-title';
 import * as postContent from './post-content';
@@ -184,7 +185,7 @@ export const __experimentalRegisterExperimentalCoreBlocks =
 
 				// Register Full Site Editing Blocks.
 				...( __experimentalEnableFullSiteEditing ?
-					[ siteTitle, postTitle, postContent ] :
+					[ siteTitle, postTitle, postContent, siteLogo ] :
 					[] ),
 			].forEach( registerBlock );
 		} :

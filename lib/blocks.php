@@ -52,6 +52,7 @@ function gutenberg_reregister_core_block_types() {
 		'search.php'          => 'core/search',
 		'social-link.php'     => gutenberg_get_registered_social_link_blocks(),
 		'tag-cloud.php'       => 'core/tag-cloud',
+		'site-logo.php'      => 'core/site-logo',
 		'site-title.php'      => 'core/site-title',
 		'post-title.php'      => 'core/post-title',
 		'post-content.php'    => 'core/post-content',

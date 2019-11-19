@@ -1,0 +1,120 @@
+/**
+ * External dependencies
+ */
+import classnames from 'classnames';
+
+/**
+ * WordPress dependencies
+ */
+import { useState } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
+import {
+	useEntityProp,
+	__experimentalUseEntitySaving,
+} from '@wordpress/core-data';
+import {
+	IconButton,
+	PanelBody,
+	RangeControl,
+	Toolbar,
+} from '@wordpress/components';
+import {
+	BlockControls,
+	BlockAlignmentToolbar,
+	InspectorControls,
+	MediaPlaceholder,
+} from '@wordpress/block-editor';
+import { useSelect } from '@wordpress/data';
+
+export default function LogoEdit( { attributes: { align, width }, children, setAttributes } ) {
+	const [ isEditing, setIsEditing ] = useState( false );
+	const [ logo, setLogo ] = useEntityProp( 'root', 'site', 'sitelogo' );
+	const [ isDirty, , save ] = __experimentalUseEntitySaving(
+		'root',
+		'site',
+		'sitelogo'
+	);
+
+	const mediaItemData = useSelect(
+		( select ) => {
+			const mediaItem = select( 'core' ).getEntityRecord( 'root', 'media', logo );
+			return mediaItem && {
+				url: mediaItem.source_url,
+				alt: mediaItem.alt_text,
+			};
+		}, [ logo ] );
+
+	let url = null;
+	let alt = null;
+	if ( mediaItemData ) {
+		alt = mediaItemData.alt;
+		url = mediaItemData.url;
+	}
+
+	if ( isDirty ) {
+		save();
+	}
+
+	const toggleIsEditing = () => setIsEditing( ! isEditing );
+
+	const onSelectLogo = ( media ) => {
+		setLogo( media.id.toString() );
+		toggleIsEditing();
+	};
+
+	const controls = (
+		<>
+			<BlockControls>
+				<BlockAlignmentToolbar
+					value={ align }
+					onChange={ ( newAlign ) => setAttributes( { align: newAlign } ) }
+					controls={ [ 'left', 'center', 'right' ] }
+				/>
+				{ !! url && (
+					<Toolbar>
+						<IconButton
+							className={ classnames( 'components-icon-button components-toolbar__control', { 'is-active': isEditing } ) }
+							label={ __( 'Edit image' ) }
+							aria-pressed={ isEditing }
+							onClick={ toggleIsEditing }
+							icon="edit"
+						/>
+					</Toolbar>
+				) }
+			</BlockControls>
+			<InspectorControls>
+				<PanelBody title={ __( 'Site Logo Settings' ) }>
+					<RangeControl
+						label={ __( 'Image width (%)' ) }
+						onChange={ ( newWidth ) => setAttributes( { width: newWidth } ) }
+						min={ 1 }
+						max={ 100 }
+						value={ width ? width : 100 }
+					/>
+				</PanelBody>
+			</InspectorControls>
+		</>
+
+	);
+
+	const label = __( 'Site Logo' );
+	const logoImage = <img src={ url } alt={ alt } width={ width + '%' } align={ align } />;
+	const editComponent = <MediaPlaceholder
+		labels={ {
+			title: label,
+			instructions: __( 'Upload an image, or pick one from your media library, to be your site logo' ),
+		} }
+		onSelect={ onSelectLogo }
+		accept="image/*"
+		allowedTypes={ 'image' }
+		mediaPreview={ !! url && logoImage }
+	>
+		{ children }
+	</MediaPlaceholder>;
+	return (
+		<>
+			{ controls }
+			{ ! url || isEditing ? editComponent : logoImage }
+		</>
+	);
+}
