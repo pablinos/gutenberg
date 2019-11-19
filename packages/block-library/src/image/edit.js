@@ -607,6 +607,7 @@ export class ImageEdit extends Component {
 					allowedTypes={ ALLOWED_MEDIA_TYPES }
 					onSelect={ this.onSelectImage }
 					onSelectURL={ this.onSelectURL }
+					onError={ this.onUploadError }
 				/> }
 				{ url && (
 					<Toolbar>

@@ -38,7 +38,7 @@ const MediaReplaceFlow = (
 		allowedTypes,
 		onSelect,
 		onSelectURL,
-		noticeOperations,
+		onError,
 		name = __( 'Replace' ),
 		multiple = false,
 	}
@@ -69,11 +69,6 @@ const MediaReplaceFlow = (
 		speak( __( 'The media file has been replaced' ) );
 	};
 
-	const onUploadError = ( message ) => {
-		noticeOperations.removeAllNotices();
-		noticeOperations.createErrorNotice( message );
-	};
-
 	const uploadFiles = ( event ) => {
 		const files = event.target.files;
 		let setMedia;
@@ -89,7 +84,7 @@ const MediaReplaceFlow = (
 			allowedTypes,
 			filesList: files,
 			onFileChange: setMedia,
-			onUploadError,
+			onError,
 		} );
 	};
 
