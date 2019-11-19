@@ -24,7 +24,7 @@ const defaultRenderToggle = ( { onToggle, disabled, isOpen, blockTitle, hasSingl
 	let label;
 	if ( hasSingleBlockType ) {
 		// translators: %s: the name of the block when there is only one
-		label = sprintf( _x( 'Add %s', 'Directly add the only allowed block' ), blockTitle );
+		label = sprintf( _x( 'Add %s', 'directly add the only allowed block' ), blockTitle );
 	} else {
 		label = _x( 'Add block', 'Generic label for block inserter button' );
 	}
@@ -78,20 +78,7 @@ class Inserter extends Component {
 			renderToggle = defaultRenderToggle,
 		} = this.props;
 
-		return (
-			<div
-				onFocus={ ( event ) => ( event.stopPropagation() ) }
-				// While ideally it would be enough to capture the
-				// bubbling focus event from the Inserter, due to the
-				// characteristics of click focusing of `button`s in
-				// Firefox and Safari, it is not reliable.
-				//
-				// See: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#Clicking_and_focus
-				tabIndex={ -1 }
-			>
-				{ renderToggle( { onToggle, isOpen, disabled, blockTitle, hasSingleBlockType } ) }
-			</div>
-		);
+		return renderToggle( { onToggle, isOpen, disabled, blockTitle, hasSingleBlockType } );
 	}
 
 	/**

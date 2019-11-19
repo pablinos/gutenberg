@@ -111,6 +111,7 @@ class InnerBlocks extends Component {
 			__experimentalTemplateOptions: templateOptions,
 			__experimentalOnSelectTemplateOption: onSelectTemplateOption,
 			__experimentalAllowTemplateOptionSkip: allowTemplateOptionSkip,
+			__experimentalPreventAppenderFocus: preventAppenderFocus,
 		} = this.props;
 		const { templateInProcess } = this.state;
 
@@ -132,6 +133,7 @@ class InnerBlocks extends Component {
 						<BlockList
 							rootClientId={ clientId }
 							renderAppender={ renderAppender }
+							__experimentalPreventAppenderFocus={ preventAppenderFocus }
 							__experimentalMoverDirection={ moverDirection }
 						/>
 				) }

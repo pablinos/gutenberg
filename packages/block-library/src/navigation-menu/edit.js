@@ -183,6 +183,7 @@ function NavigationMenu( {
 						allowedBlocks={ [ 'core/navigation-link' ] }
 						templateInsertUpdatesSelection={ false }
 						__experimentalMoverDirection={ 'horizontal' }
+						__experimentalPreventAppenderFocus={ true }
 					/>
 
 				</div>
