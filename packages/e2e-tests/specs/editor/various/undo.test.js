@@ -10,7 +10,6 @@ import {
 	getAllBlocks,
 	saveDraft,
 	publishPost,
-	disableNavigationMode,
 } from '@wordpress/e2e-test-utils';
 
 describe( 'undo', () => {
@@ -182,7 +181,6 @@ describe( 'undo', () => {
 		await page.keyboard.type( 'original' );
 		await saveDraft();
 		await page.reload();
-		await disableNavigationMode();
 
 		// Issue is demonstrated by forcing state merges (multiple inputs) on
 		// an existing text after a fresh reload.
