@@ -568,6 +568,37 @@ export class ImageEdit extends Component {
 		return map( imageSizes, ( { name, slug } ) => ( { value: slug, label: name } ) );
 	}
 
+	getMediaPlaceholder( placeholderProps ) {
+		const {
+			className,
+			labels,
+			id,
+			src,
+			mediaPreview,
+			isEditing,
+			url,
+			noticeUI,
+			allowedMediaTypes,
+		} = placeholderProps;
+
+		return <MediaPlaceholder
+			icon={ <BlockIcon icon={ icon } /> }
+			className={ className }
+			labels={ labels }
+			onSelect={ this.onSelectImage }
+			onSelectURL={ this.onSelectURL }
+			onDoubleClick={ this.toggleIsEditing }
+			onCancel={ !! url && this.toggleIsEditing }
+			notices={ noticeUI }
+			onError={ this.onUploadError }
+			accept="image/*"
+			allowedTypes={ allowedMediaTypes }
+			value={ { id, src } }
+			mediaPreview={ mediaPreview }
+			disableMediaButtons={ ! isEditing && url }
+		/>;
+	}
+
 	render() {
 		const { isEditing } = this.state;
 		const {
@@ -663,24 +694,18 @@ export class ImageEdit extends Component {
 			className={ 'edit-image-preview' }
 			src={ url }
 		/> );
-		const mediaPlaceholder = (
-			<MediaPlaceholder
-				icon={ <BlockIcon icon={ icon } /> }
-				className={ className }
-				labels={ labels }
-				onSelect={ this.onSelectImage }
-				onSelectURL={ this.onSelectURL }
-				onDoubleClick={ this.toggleIsEditing }
-				onCancel={ !! url && this.toggleIsEditing }
-				notices={ noticeUI }
-				onError={ this.onUploadError }
-				accept="image/*"
-				allowedTypes={ ALLOWED_MEDIA_TYPES }
-				value={ { id, src } }
-				mediaPreview={ mediaPreview }
-				disableMediaButtons={ ! isEditing && url }
-			/>
-		);
+		const mediaPlaceholder = this.getMediaPlaceholder( {
+			className,
+			labels,
+			id,
+			src,
+			icon,
+			mediaPreview,
+			isEditing,
+			url,
+			noticeUI,
+			allowedMediaTypes: ALLOWED_MEDIA_TYPES,
+		} );
 		if ( isEditing || ! url ) {
 			return (
 				<>

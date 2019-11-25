@@ -257,6 +257,7 @@ export class MediaPlaceholder extends Component {
 	}
 
 	renderUrlSelectionUI() {
+		console.log( 'In the super' );
 		const {
 			onSelectURL,
 		} = this.props;
