@@ -98,7 +98,11 @@ export default function LogoEdit( { attributes: { align, width }, children, setA
 	);
 
 	const label = __( 'Site Logo' );
-	const logoImage = <img src={ url } alt={ alt } width={ width + '%' } align={ align } />;
+	const logoImage = (
+		<a href="#home" className="custom-logo-link" rel="home">
+			<img className="custom-logo" src={ url } alt={ alt } width={ width + '%' } align={ align } />
+		</a>
+	);
 	const editComponent = <MediaPlaceholder
 		labels={ {
 			title: label,
