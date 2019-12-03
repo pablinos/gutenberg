@@ -67,17 +67,19 @@ export default function LogoEdit( { attributes: { align, width }, children, clas
 
 	const toggleIsEditing = () => setIsEditing( ! isEditing );
 
+	const setIsNotEditing = () => setIsEditing( false );
+
 	const onSelectLogo = ( media ) => {
 		if ( ! media || ! media.id ) {
 			return;
 		}
 
 		setLogo( media.id.toString() );
-		toggleIsEditing();
+		setIsNotEditing();
 	};
 
 	const deleteLogo = () => {
-		setLogo('');
+		setLogo( '' );
 	};
 
 	const controls = (
@@ -133,7 +135,7 @@ export default function LogoEdit( { attributes: { align, width }, children, clas
 		accept="image/*"
 		allowedTypes={ [ 'image' ] }
 		mediaPreview={ !! url && logoImage }
-		onCancel={ !! url && toggleIsEditing }
+		onCancel={ !! url && setIsNotEditing }
 		onError={ onError }
 	>
 		{ !! url && (
