@@ -1,0 +1,7 @@
+.custom-logo-link {
+	cursor: inherit;
+
+	&:focus {
+		box-shadow: none;
+	}
+}
