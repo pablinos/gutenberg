@@ -76,6 +76,10 @@ export default function LogoEdit( { attributes: { align, width }, children, clas
 		toggleIsEditing();
 	};
 
+	const deleteLogo = () => {
+		setLogo('');
+	};
+
 	const controls = (
 		<>
 			<BlockControls>
@@ -132,6 +136,11 @@ export default function LogoEdit( { attributes: { align, width }, children, clas
 		onCancel={ !! url && toggleIsEditing }
 		onError={ onError }
 	>
+		{ !! url && (
+			<IconButton isLarge icon="delete" onClick={ deleteLogo }>
+				{ __( 'Delete Site Logo' ) }
+			</IconButton>
+		) }
 		{ children }
 	</MediaPlaceholder>;
 
