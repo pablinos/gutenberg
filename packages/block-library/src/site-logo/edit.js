@@ -32,6 +32,10 @@ import { useSelect } from '@wordpress/data';
  */
 import icon from './icon';
 
+const onError = ( message ) => {
+	console.log( message );
+};
+
 export default function LogoEdit( { attributes: { align, width }, children, setAttributes } ) {
 	const [ isEditing, setIsEditing ] = useState( false );
 	const [ logo, setLogo ] = useEntityProp( 'root', 'site', 'sitelogo' );
@@ -64,6 +68,10 @@ export default function LogoEdit( { attributes: { align, width }, children, setA
 	const toggleIsEditing = () => setIsEditing( ! isEditing );
 
 	const onSelectLogo = ( media ) => {
+		if ( ! media || ! media.id ) {
+			return;
+		}
+
 		setLogo( media.id.toString() );
 		toggleIsEditing();
 	};
@@ -117,8 +125,9 @@ export default function LogoEdit( { attributes: { align, width }, children, setA
 		} }
 		onSelect={ onSelectLogo }
 		accept="image/*"
-		allowedTypes={ 'image' }
+		allowedTypes={ [ 'image' ] }
 		mediaPreview={ !! url && logoImage }
+		onError={ onError }
 	>
 		{ children }
 	</MediaPlaceholder>;
