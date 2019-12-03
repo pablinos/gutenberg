@@ -36,7 +36,7 @@ const onError = ( message ) => {
 	console.log( message );
 };
 
-export default function LogoEdit( { attributes: { align, width }, children, setAttributes } ) {
+export default function LogoEdit( { attributes: { align, width }, children, className, setAttributes } ) {
 	const [ isEditing, setIsEditing ] = useState( false );
 	const [ logo, setLogo ] = useEntityProp( 'root', 'site', 'sitelogo' );
 	const [ isDirty, , save ] = __experimentalUseEntitySaving(
@@ -129,14 +129,18 @@ export default function LogoEdit( { attributes: { align, width }, children, setA
 		accept="image/*"
 		allowedTypes={ [ 'image' ] }
 		mediaPreview={ !! url && logoImage }
+		onCancel={ !! url && toggleIsEditing }
 		onError={ onError }
 	>
 		{ children }
 	</MediaPlaceholder>;
+
 	return (
 		<>
-			{ controls }
-			{ ! url || isEditing ? editComponent : logoImage }
+			<div className={ className }>
+				{ controls }
+				{ ! url || isEditing ? editComponent : logoImage }
+			</div>
 		</>
 	);
 }
