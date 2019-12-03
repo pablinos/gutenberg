@@ -96,17 +96,19 @@ export default function LogoEdit( { attributes: { align, width }, children, setA
 					</Toolbar>
 				) }
 			</BlockControls>
-			<InspectorControls>
-				<PanelBody title={ __( 'Site Logo Settings' ) }>
-					<RangeControl
-						label={ __( 'Image width (%)' ) }
-						onChange={ ( newWidth ) => setAttributes( { width: newWidth } ) }
-						min={ 1 }
-						max={ 100 }
-						value={ width ? width : 100 }
-					/>
-				</PanelBody>
-			</InspectorControls>
+			{ isEditing ? null : (
+				<InspectorControls>
+					<PanelBody title={ __( 'Site Logo Settings' ) }>
+						<RangeControl
+							label={ __( 'Image width (%)' ) }
+							onChange={ ( newWidth ) => setAttributes( { width: newWidth } ) }
+							min={ 1 }
+							max={ 100 }
+							value={ width ? width : 100 }
+						/>
+					</PanelBody>
+				</InspectorControls>
+			) }
 		</>
 
 	);
