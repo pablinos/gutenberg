@@ -21,10 +21,16 @@ import {
 import {
 	BlockControls,
 	BlockAlignmentToolbar,
+	BlockIcon,
 	InspectorControls,
 	MediaPlaceholder,
 } from '@wordpress/block-editor';
 import { useSelect } from '@wordpress/data';
+
+/**
+ * Internal dependencies
+ */
+import icon from './icon';
 
 export default function LogoEdit( { attributes: { align, width }, children, setAttributes } ) {
 	const [ isEditing, setIsEditing ] = useState( false );
@@ -104,6 +110,7 @@ export default function LogoEdit( { attributes: { align, width }, children, setA
 		</a>
 	);
 	const editComponent = <MediaPlaceholder
+		icon={ <BlockIcon icon={ icon } fill="ff0000" /> }
 		labels={ {
 			title: label,
 			instructions: __( 'Upload an image, or pick one from your media library, to be your site logo' ),

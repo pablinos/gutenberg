@@ -197,6 +197,7 @@ function gutenberg_find_template( $template_file ) {
 	if ( $current_template_post ) {
 		$_wp_current_template_content = $current_template_post->post_content;
 	}
+	$_wp_current_template_content = $current_template_post->post_content;
 
 	// Add extra hooks for template canvas.
 	add_action( 'wp_head', 'gutenberg_viewport_meta_tag', 0 );
