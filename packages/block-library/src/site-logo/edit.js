@@ -34,10 +34,6 @@ import { useSelect } from '@wordpress/data';
  */
 import icon from './icon';
 
-const onError = ( message ) => {
-	alert( message );
-};
-
 import ImageSize from '../image/image-size';
 
 const getHandleStates = ( align, isRTL = false ) => {
@@ -162,6 +158,12 @@ export default function LogoEdit( { attributes: { align, width }, children, clas
 		return () => window.removeEventListener( 'resize', calculateMaxWidth );
 	} );
 
+	const img = (
+		<a href="#home" className="custom-logo-link" rel="home">
+			<img className="custom-logo" src={ url } alt={ alt } />
+		</a>
+	);
+
 	const label = __( 'Site Logo' );
 	const logoImage = (
 		<ImageSize src={ url }>
@@ -172,12 +174,6 @@ export default function LogoEdit( { attributes: { align, width }, children, clas
 					imageHeight,
 				} = sizes;
 
-				const img = (
-					<a href="#home" className="custom-logo-link" rel="home">
-						<img className="custom-logo" src={ url } alt={ alt } />
-					</a>
-				);
-
 				const currentWidth = width || imageWidthWithinContainer;
 				const ratio = imageWidth / imageHeight;
 				const currentHeight = width ? width / ratio : imageWidthWithinContainer;
@@ -187,7 +183,8 @@ export default function LogoEdit( { attributes: { align, width }, children, clas
 					maxWidthProp.maxWidth = maxWidth;
 				}
 
-				const canResize = isLargeViewport && ( ! width || width <= maxWidth );
+				const canResize = ! isEditing && isLargeViewport && ( ! width || width <= maxWidth );
+
 				const wrapperProps = {};
 				if ( align ) {
 					wrapperProps.className = `align${ align }`;
@@ -199,7 +196,7 @@ export default function LogoEdit( { attributes: { align, width }, children, clas
 
 				return (
 					<>
-						{ ! isEditing && getInspectorControls( imageWidth, width, maxWidth, canResize ) }
+						{ getInspectorControls( imageWidth, width, maxWidth, canResize ) }
 						<div { ...wrapperProps }>
 							{ canResize ? (
 								<ResizableBox
@@ -243,9 +240,8 @@ export default function LogoEdit( { attributes: { align, width }, children, clas
 			onSelect={ onSelectLogo }
 			accept="image/*"
 			allowedTypes={ [ 'image' ] }
-			mediaPreview={ !! url && logoImage }
+			mediaPreview={ !! url && img }
 			onCancel={ !! url && setIsNotEditing }
-			onError={ onError }
 		>
 			{ !! url && (
 				<IconButton isLarge icon="delete" onClick={ deleteLogo }>
@@ -257,11 +253,9 @@ export default function LogoEdit( { attributes: { align, width }, children, clas
 	);
 
 	return (
-		<>
-			<div className={ className }>
-				{ controls }
-				{ ! url || isEditing ? editComponent : logoImage }
-			</div>
-		</>
+		<div className={ className }>
+			{ controls }
+			{ ! url || isEditing ? editComponent : logoImage }
+		</div>
 	);
 }
