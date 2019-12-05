@@ -15,21 +15,22 @@ function render_block_core_site_logo( $attributes ) {
 		if ( ! empty( $attributes['align'] ) ) {
 			$image_attrs['align'] = $attributes['align'];
 		}
-		if ( ! empty( $attributes['width'] ) ) {
-			$image_attrs['width'] = $attributes['width'] . '%';
-		}
 		return $image_attrs;
 	};
 
-	add_filter( 'wp_get_attachment_image_attributes', $image_attrs_filter );
-	$html = get_custom_logo( get_current_blog_id() );
-	remove_filter( 'wp_get_attachment_image_attributes', $image_attrs_filter );
+	$adjust_width_height_filter = function ( $image ) use ( $attributes ) {
+		if ( empty( $attributes['width'] ) ) {
+			return $image;
+		}
+		$scale = floatval( $attributes['width'] ) / 100;
+        return array( $image[0], intval( $image[1] * $scale ), intval( $image[2] * $scale ) );
+    };
 
-	if ( ! empty( $attributes['width'] ) ) {
-		// Strip the default width and height if we are setting our own
-		$html = preg_replace( '/width="[0-9]+"/', '', $html );
-		$html = preg_replace( '/height="[0-9]+"/', '', $html );
-	}
+	add_filter( 'wp_get_attachment_image_src', $adjust_width_height_filter );
+	add_filter( 'wp_get_attachment_image_attributes', $image_attrs_filter );
+	$html = get_custom_logo();
+	remove_filter( 'wp_get_attachment_image_src', $adjust_width_height_filter );
+	remove_filter( 'wp_get_attachment_image_attributes', $image_attrs_filter );
 
 	return $html;
 }
