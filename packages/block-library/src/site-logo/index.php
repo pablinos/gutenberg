@@ -12,9 +12,6 @@
  */
 function render_block_core_site_logo( $attributes ) {
 	$image_attrs_filter = function ( $image_attrs ) use ( $attributes ) {
-		if ( ! empty( $attributes['align'] ) ) {
-			$image_attrs['align'] = $attributes['align'];
-		}
 		return $image_attrs;
 	};
 
@@ -22,15 +19,17 @@ function render_block_core_site_logo( $attributes ) {
 		if ( empty( $attributes['width'] ) ) {
 			return $image;
 		}
-		$scale = floatval( $attributes['width'] ) / 100;
-        return array( $image[0], intval( $image[1] * $scale ), intval( $image[2] * $scale ) );
+		$height = floatval( $attributes['width'] ) / ( floatval( $image[1] ) / floatval( $image[2] ) );
+        return array( $image[0], intval( $attributes['width'] ), intval( $height ) );
     };
 
 	add_filter( 'wp_get_attachment_image_src', $adjust_width_height_filter );
-	add_filter( 'wp_get_attachment_image_attributes', $image_attrs_filter );
-	$html = get_custom_logo();
+	$classes = array( 'custom-logo' );
+	if ( ! empty( $attributes['align'] ) ) {
+		$classes[] = "align{$attributes['align']}";
+	}
+	$html = sprintf( '<div class="%s">%s</div>', implode( ' ', $classes ), get_custom_logo() );
 	remove_filter( 'wp_get_attachment_image_src', $adjust_width_height_filter );
-	remove_filter( 'wp_get_attachment_image_attributes', $image_attrs_filter );
 
 	return $html;
 }
