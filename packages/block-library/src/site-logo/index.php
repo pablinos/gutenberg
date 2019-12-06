@@ -24,11 +24,22 @@ function render_block_core_site_logo( $attributes ) {
     };
 
 	add_filter( 'wp_get_attachment_image_src', $adjust_width_height_filter );
-	$classes = array( 'custom-logo' );
-	if ( ! empty( $attributes['align'] ) ) {
-		$classes[] = "align{$attributes['align']}";
+
+	$custom_logo = get_custom_logo();
+	if ( ! empty( $attributes['align'] ) && in_array( $attributes['align'], array( 'center', 'left', 'right' ) ) ) {
+		$custom_logo = str_replace(
+			'class="custom-logo-link"',
+			"class=\"custom-logo-link align{$attributes['align']}\"",
+			$custom_logo
+		);
+		$html = sprintf( '<div class="wp-block-custom-logo">%s</div>', $custom_logo );
+	} else {
+		$html = str_replace(
+			'class="custom-logo-link"',
+			'class="wp-block-custom-logo custom-logo-link"',
+			$custom_logo
+		);
 	}
-	$html = sprintf( '<div class="%s">%s</div>', implode( ' ', $classes ), get_custom_logo() );
 	remove_filter( 'wp_get_attachment_image_src', $adjust_width_height_filter );
 
 	return $html;
