@@ -148,10 +148,10 @@ export default function LogoEdit( { attributes: { align, width }, children, clas
 		);
 	};
 
-	const wrapperElement = document.getElementById( `block-${ clientId }` );
-	const [ maxWidth, setMaxWidth ] = useState( wrapperElement && wrapperElement.clientWidth );
+	const [ maxWidth, setMaxWidth ] = useState( 10 );
 
 	useEffect( () => {
+		const wrapperElement = document.getElementById( `block-${ clientId }` );
 		const calculateMaxWidth = debounce( () => setMaxWidth( wrapperElement && wrapperElement.clientWidth ), 250 );
 		calculateMaxWidth();
 		window.addEventListener( 'resize', calculateMaxWidth );
@@ -176,7 +176,7 @@ export default function LogoEdit( { attributes: { align, width }, children, clas
 
 				const currentWidth = width || imageWidthWithinContainer;
 				const ratio = imageWidth / imageHeight;
-				const currentHeight = width ? width / ratio : imageWidthWithinContainer;
+				const currentHeight = currentWidth / ratio;
 
 				const maxWidthProp = {};
 				if ( maxWidth ) {
@@ -194,6 +194,11 @@ export default function LogoEdit( { attributes: { align, width }, children, clas
 					wrapperProps.style = { width: Math.min( currentWidth, maxWidth ) };
 				}
 
+				const boxSize = {
+					width: Math.min( currentWidth, maxWidth ),
+					height: ( maxWidth && currentWidth <= maxWidth ) ? currentHeight : maxWidth / ratio,
+				};
+
 				return (
 					<>
 						{ getInspectorControls( imageWidth, width, maxWidth, canResize ) }
@@ -201,10 +206,7 @@ export default function LogoEdit( { attributes: { align, width }, children, clas
 							{ canResize ? (
 								<ResizableBox
 									showHandle={ isSelected }
-									size={ {
-										width: Math.min( currentWidth, maxWidth ),
-										height: currentWidth <= maxWidth ? currentHeight : maxWidth / ratio,
-									} }
+									size={ boxSize }
 									lockAspectRatio={ true }
 									minWidth={ 10 }
 									{ ...maxWidthProp }
